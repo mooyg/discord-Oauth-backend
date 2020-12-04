@@ -4,6 +4,7 @@ const cors = require('cors')
 const session = require('express-session')
 const passport = require('passport')
 var cookieSession = require('cookie-session')
+require('dotenv').config()
 
 const DiscordStrategy = require('passport-discord').Strategy
 var corsOptions = {
@@ -16,7 +17,7 @@ app.use(cors(corsOptions));
 app.use(
     session({
         name: "aid",
-        secret: 'ss',
+        secret: process.env.SESSION_SECRET,
         resave: true,
         saveUninitialized: false,
         cookie: {
@@ -39,10 +40,10 @@ passport.deserializeUser(function (obj, done) {
 
 const scopes = ['identify', 'email', 'guilds', 'guilds.join'];
 passport.use(new DiscordStrategy({
-    clientID: "680089271998218240",
-    clientSecret: "T5jwg-uUfe9VwRzsv071SCZVEpKqmnbQ",
+    clientID: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
     scope: scopes,
-    callbackURL: "http://localhost:8000/auth/discord/callback"
+    callbackURL: process.env.CLIENT_CALLBACK
 }, function (accessToken, refreshToken, profile, cb) {
     return cb(null, profile)
 }))
@@ -72,5 +73,5 @@ app.get('/me', (req, res) => {
 })
 
 app.listen('8000', () => {
-    console.log("APP OMJ")
+    console.log("APP ON")
 })
